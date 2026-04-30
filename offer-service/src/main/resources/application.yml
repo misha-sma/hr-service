@@ -1,0 +1,12 @@
+server:
+  port: 8082
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/hr
+
+kafka:
+  consumer:
+    topic: complete-calculation
+    group-id: offer-group

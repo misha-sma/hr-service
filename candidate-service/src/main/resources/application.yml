@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hr
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
+
+kafka:
+  producer:
+    topic: create-candidate
