@@ -1,7 +1,9 @@
 package candidate.service.impl;
 
-import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,15 +23,30 @@ public class EventServiceImpl implements EventService {
 	private final EventRepository eventRepository;
 	private final KafkaProducer kafkaProducer;
 
+	@Lazy
+	@Autowired
+	private EventService eventService;
+
+	@Override
 	@Scheduled(initialDelay = 1000, fixedDelay = 2000)
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	public void sendMessages() {
+		boolean isSent = false;
+		do {
+			isSent = eventService.sendOneMessage();
+		} while (isSent);
+	}
+
 	@Override
 	@Transactional
-	public void sendMessages() {
-		List<Event> events = eventRepository.getEventsToSending();
-		for (Event event : events) {
-			kafkaProducer.sendMessage(event.getMessage(), event.getCandidateId());
-			event.setSent(true);
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	public boolean sendOneMessage() {
+		Optional<Event> eventOptional = eventRepository.getOneEventToSending();
+		if (eventOptional.isEmpty()) {
+			return false;
 		}
+		Event event = eventOptional.get();
+		kafkaProducer.sendMessage(event.getMessage(), event.getCandidateId());
+		event.setSent(true);
+		return true;
 	}
 }
