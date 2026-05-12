@@ -8,11 +8,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import calculation.data.entity.Candidate;
+import calculation.data.dto.CandidateDto;
 import calculation.service.CalculationService;
 import calculation.service.KafkaConsumer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KafkaConsumerImpl implements KafkaConsumer {
@@ -27,15 +29,15 @@ public class KafkaConsumerImpl implements KafkaConsumer {
 	@Override
 	@KafkaListener(topics = KAFKA_TOPIC, groupId = KAFKA_CONSUMER_GROUP_ID)
 	public void getCandidate(String json) {
-		System.out.println("recieve message json: " + json);
+		log.info("Receive json: " + json);
 		try {
-			Candidate candidate = objectMapper.readValue(json, Candidate.class);
-			System.out.println("candidate= " + candidate.toString());
+			CandidateDto candidate = objectMapper.readValue(json, CandidateDto.class);
+			log.info("Receive candidate: " + candidate.toString());
 			calculationService.calculateMetics(candidate);
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 }

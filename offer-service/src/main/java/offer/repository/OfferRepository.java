@@ -1,9 +1,13 @@
 package offer.repository;
 
+import java.util.UUID;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import offer.data.entity.Offer;
 
-public interface OfferRepository extends MongoRepository<Offer, Integer> {
+@Repository
+public interface OfferRepository extends MongoRepository<Offer, UUID> {
 
 }

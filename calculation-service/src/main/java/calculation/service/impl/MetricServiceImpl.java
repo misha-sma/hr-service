@@ -9,9 +9,9 @@ import calculation.service.MetricService;
 @Service
 public class MetricServiceImpl implements MetricService {
 
-	@CachePut(value = "metric", key = "#id")
 	@Override
-	public Metric saveMetric(Metric metric, Integer id) {
+	@CachePut(value = "metric", key = "#metric.candidateId")
+	public Metric saveMetric(Metric metric) {
 		return metric;
 	}
 }

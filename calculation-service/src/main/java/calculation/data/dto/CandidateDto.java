@@ -1,4 +1,4 @@
-package calculation.data.entity;
+package calculation.data.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Candidate {
+public class CandidateDto {
 
 	@JsonProperty("candidateId")
 	private Integer candidateId;

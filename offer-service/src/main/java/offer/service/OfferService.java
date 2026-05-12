@@ -1,11 +1,16 @@
 package offer.service;
 
-import offer.data.entity.MetricWithId;
+import java.util.List;
+import java.util.UUID;
+
+import offer.data.dto.MetricDto;
 import offer.data.entity.Offer;
 
 public interface OfferService {
 
-	void createOffer(MetricWithId metricWithId);
+	void createOffer(MetricDto metric);
 
-	Offer getOffer(Integer offerId);
+	Offer getOffer(UUID offerId);
+
+	List<Offer> getAllOffersByCandidate(Integer candidateId);
 }

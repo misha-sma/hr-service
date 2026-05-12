@@ -12,3 +12,9 @@ kafka:
     group-id: calculation-group
   producer:
     topic: complete-calculation
+
+app:
+  min-salary: 40000
+  junior-middle-threshold: 100000
+  middle-senior-threshold: 200000
+  max-salary: 1000000

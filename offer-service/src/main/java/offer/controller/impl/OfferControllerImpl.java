@@ -1,5 +1,8 @@
 package offer.controller.impl;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,12 +18,19 @@ public class OfferControllerImpl implements OfferController {
 
 	private final OfferService offerService;
 
-	@GetMapping("/offer/{offerId}")
 	@Override
-	public Offer getOffer(@PathVariable Integer offerId) {
+	@GetMapping("/offer/{offerId}")
+	public Offer getOffer(@PathVariable UUID offerId) {
 		return offerService.getOffer(offerId);
 	}
 
+	@Override
+	@GetMapping("/offers/{candidateId}")
+	public List<Offer> getAllOffersByCandidate(@PathVariable Integer candidateId) {
+		return offerService.getAllOffersByCandidate(candidateId);
+	}
+
+	@Override
 	@GetMapping("/")
 	public String getHomePage() {
 		return "Offer service works!!!";

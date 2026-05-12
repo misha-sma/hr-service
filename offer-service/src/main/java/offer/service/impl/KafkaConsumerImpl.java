@@ -8,14 +8,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-//import calculation.data.entity.Candidate;
-//import calculation.service.CalculationService;
-//import calculation.service.KafkaConsumer;
 import lombok.RequiredArgsConstructor;
-import offer.data.entity.MetricWithId;
+import lombok.extern.slf4j.Slf4j;
+import offer.data.dto.MetricDto;
 import offer.service.KafkaConsumer;
 import offer.service.OfferService;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KafkaConsumerImpl implements KafkaConsumer {
@@ -30,15 +29,15 @@ public class KafkaConsumerImpl implements KafkaConsumer {
 	@Override
 	@KafkaListener(topics = KAFKA_TOPIC, groupId = KAFKA_CONSUMER_GROUP_ID)
 	public void getMetric(String json) {
-		System.out.println("recieve message json: " + json);
+		log.info("Receive json: " + json);
 		try {
-			MetricWithId metricWithId = objectMapper.readValue(json, MetricWithId.class);
-			System.out.println("metric= " + metricWithId.toString());
-			offerService.createOffer(metricWithId);
+			MetricDto metric = objectMapper.readValue(json, MetricDto.class);
+			log.info("Receive metric: " + metric.toString());
+			offerService.createOffer(metric);
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 }
