@@ -8,6 +8,7 @@ import org.mapstruct.ReportingPolicy;
 import candidate.data.dto.CreateCandidateDto;
 import candidate.data.dto.UpdateCandidateDto;
 import candidate.data.entity.Candidate;
+import candidate.data.event.CandidateCreatedEvent;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CandidateMapper {
@@ -16,4 +17,7 @@ public interface CandidateMapper {
 	Candidate createCandidateDtoToCandidate(CreateCandidateDto createCandidateDto);
 
 	void updateCandidateFromDto(UpdateCandidateDto updateCandidateDto, @MappingTarget Candidate candidate);
+
+	@Mapping(target = "eventId", expression = "java(java.util.UUID.randomUUID())")
+	CandidateCreatedEvent candidateToCandidateCreatedEvent(Candidate candidate);
 }

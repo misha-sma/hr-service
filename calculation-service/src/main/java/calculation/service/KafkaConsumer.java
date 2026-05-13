@@ -1,6 +1,8 @@
 package calculation.service;
 
+import calculation.data.event.CandidateCreatedEvent;
+
 public interface KafkaConsumer {
 
-	void getCandidate(String json);
+	void getCandidate(CandidateCreatedEvent candidateCreatedEvent);
 }

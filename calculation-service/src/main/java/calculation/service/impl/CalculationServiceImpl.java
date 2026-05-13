@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import calculation.data.dto.CandidateDto;
 import calculation.data.dto.SalaryForkDto;
 import calculation.data.entity.Metric;
+import calculation.data.event.CandidateCreatedEvent;
 import calculation.data.mapper.MetricMapper;
 import calculation.service.CalculationService;
+import calculation.service.EventService;
 import calculation.service.KafkaProducer;
 import calculation.service.MetricService;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 public class CalculationServiceImpl implements CalculationService {
 
 	private final MetricService metricService;
+	private final EventService eventService;
 	private final MetricMapper metricMapper;
 	private final KafkaProducer kafkaProducer;
-	private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+	private final ObjectMapper objectMapper;
 
 	@Value("${app.min-salary}")
 	private BigDecimal minSalary;
@@ -42,9 +43,14 @@ public class CalculationServiceImpl implements CalculationService {
 	private BigDecimal maxSalary;
 
 	@Override
-	public void calculateMetics(CandidateDto candidate) {
-		Metric metric = metricMapper.candidateDtoToMetric(candidate);
-		SalaryForkDto salaryFork = getSalaryFork(candidate);
+	public void calculateMetics(CandidateCreatedEvent event) {
+		CandidateCreatedEvent cachedEvent = eventService.getCandidateCreatedEventById(event.eventId());
+		if (cachedEvent != null) {
+			return;
+		}
+		eventService.saveCandidateCreatedEvent(event);
+		Metric metric = metricMapper.candidateCreatedEventToMetric(event);
+		SalaryForkDto salaryFork = getSalaryFork(event);
 		metricMapper.setSalaryForkToMetric(salaryFork, metric);
 		metricService.saveMetric(metric);
 		try {
@@ -55,8 +61,8 @@ public class CalculationServiceImpl implements CalculationService {
 		}
 	}
 
-	private SalaryForkDto getSalaryFork(CandidateDto candidate) {
-		return switch (candidate.getGrade()) {
+	private SalaryForkDto getSalaryFork(CandidateCreatedEvent event) {
+		return switch (event.grade()) {
 		case JUNIOR -> new SalaryForkDto(minSalary, juniorMiddleThreshold);
 		case MIDDLE -> new SalaryForkDto(juniorMiddleThreshold, middleSeniorThreshold);
 		case SENIOR -> new SalaryForkDto(middleSeniorThreshold, maxSalary);

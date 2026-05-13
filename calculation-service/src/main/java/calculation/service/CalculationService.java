@@ -1,8 +1,8 @@
 package calculation.service;
 
-import calculation.data.dto.CandidateDto;
+import calculation.data.event.CandidateCreatedEvent;
 
 public interface CalculationService {
 
-	void calculateMetics(CandidateDto candidate);
+	void calculateMetics(CandidateCreatedEvent candidateCreatedEvent);
 }

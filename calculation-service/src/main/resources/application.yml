@@ -6,12 +6,21 @@ spring:
     cache:
       type: redis
 
-kafka:
-  consumer:
-    topic: create-candidate
-    group-id: calculation-group
-  producer:
-    topic: complete-calculation
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      topic: complete-calculation
+    consumer:
+      topic: create-candidate
+      group-id: calculation-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
 
 app:
   min-salary: 40000

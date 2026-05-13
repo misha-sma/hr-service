@@ -1,7 +1,5 @@
 package candidate.service.impl;
 
-import java.time.LocalDateTime;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +11,10 @@ import candidate.data.dto.ResponseDto;
 import candidate.data.dto.UpdateCandidateDto;
 import candidate.data.entity.Candidate;
 import candidate.data.entity.Event;
+import candidate.data.event.CandidateCreatedEvent;
 import candidate.data.exception.CandidateNotExistException;
 import candidate.data.mapper.CandidateMapper;
+import candidate.data.mapper.EventMapper;
 import candidate.repository.CandidateRepository;
 import candidate.repository.EventRepository;
 import candidate.service.CandidateService;
@@ -28,24 +28,17 @@ public class CandidateServiceImpl implements CandidateService {
 
 	private final CandidateRepository candidateRepository;
 	private final EventRepository eventRepository;
+
 	private final CandidateMapper candidateMapper;
+	private final EventMapper eventMapper;
+
 	private final ObjectMapper objectMapper;
 
 	@Override
 	@Transactional
 	public ResponseDto createCandidate(CreateCandidateDto createCandidateDto) {
 		Candidate candidate = candidateMapper.createCandidateDtoToCandidate(createCandidateDto);
-		candidateRepository.save(candidate);
-		Event event = new Event();
-		event.setCandidateId(candidate.getCandidateId());
-		event.setSent(false);
-		event.setCreateDate(LocalDateTime.now());
-		try {
-			event.setMessage(objectMapper.writeValueAsString(candidate));
-		} catch (JsonProcessingException e) {
-			log.error(e.getMessage(), e);
-		}
-		eventRepository.save(event);
+		saveCandidateAndEvent(candidate);
 		return new ResponseDto(candidate.getCandidateId());
 	}
 
@@ -56,13 +49,15 @@ public class CandidateServiceImpl implements CandidateService {
 				.orElseThrow(() -> new CandidateNotExistException(
 						"Candidate with id " + updateCandidateDto.candidateId() + " doesn't exist"));
 		candidateMapper.updateCandidateFromDto(updateCandidateDto, candidate);
+		saveCandidateAndEvent(candidate);
+	}
+
+	private void saveCandidateAndEvent(Candidate candidate) {
 		candidateRepository.save(candidate);
-		Event event = new Event();
-		event.setCandidateId(candidate.getCandidateId());
-		event.setSent(false);
-		event.setCreateDate(LocalDateTime.now());
+		CandidateCreatedEvent candidateCreatedEvent = candidateMapper.candidateToCandidateCreatedEvent(candidate);
+		Event event = eventMapper.candidateCreatedEventToEvent(candidateCreatedEvent);
 		try {
-			event.setMessage(objectMapper.writeValueAsString(candidate));
+			event.setMessage(objectMapper.writeValueAsString(candidateCreatedEvent));
 		} catch (JsonProcessingException e) {
 			log.error(e.getMessage(), e);
 		}

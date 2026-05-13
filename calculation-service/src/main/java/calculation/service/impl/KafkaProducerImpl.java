@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KafkaProducerImpl implements KafkaProducer {
 
-	@Value("${kafka.producer.topic}")
+	@Value("${spring.kafka.producer.topic}")
 	private String completeCalculationTopic;
 
 	private final KafkaTemplate<String, Object> kafkaTemplate;
