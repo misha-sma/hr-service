@@ -1,6 +1,8 @@
 package calculation.service;
 
+import calculation.data.event.CalculationCompletedEvent;
+
 public interface KafkaProducer {
 
-	void sendMessage(String message, Integer key);
+	void sendMessage(CalculationCompletedEvent event);
 }

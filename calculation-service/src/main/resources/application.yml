@@ -10,6 +10,15 @@ spring:
     bootstrap-servers: localhost:9092
     producer:
       topic: complete-calculation
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: 1
+        spring:
+          json:
+            add:
+              type:
+                headers: false
     consumer:
       topic: create-candidate
       group-id: calculation-group

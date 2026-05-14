@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import calculation.data.event.CalculationCompletedEvent;
 import calculation.service.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +18,7 @@ public class KafkaProducerImpl implements KafkaProducer {
 	private final KafkaTemplate<String, Object> kafkaTemplate;
 
 	@Override
-	public void sendMessage(String message, Integer key) {
-		kafkaTemplate.send(completeCalculationTopic, String.valueOf(key), message);
+	public void sendMessage(CalculationCompletedEvent event) {
+		kafkaTemplate.send(completeCalculationTopic, String.valueOf(event.getCandidateId()), event);
 	}
 }
