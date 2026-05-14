@@ -7,19 +7,19 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import calculation.data.event.CandidateCreatedEvent;
-import calculation.service.EventService;
+import calculation.service.InputEventService;
 
 @Service
-public class EventServiceImpl implements EventService {
+public class InputEventServiceImpl implements InputEventService {
 
 	@Override
-	@CachePut(value = "event", key = "#event.eventId")
+	@CachePut(value = "input_event", key = "#event.eventId")
 	public CandidateCreatedEvent saveCandidateCreatedEvent(CandidateCreatedEvent event) {
 		return event;
 	}
 
 	@Override
-	@Cacheable("event")
+	@Cacheable("input_event")
 	public CandidateCreatedEvent getCandidateCreatedEventById(UUID eventId) {
 		return null;
 	}

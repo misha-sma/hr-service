@@ -1,6 +1,8 @@
 package offer.service;
 
+import offer.data.event.CalculationCompletedEvent;
+
 public interface KafkaConsumer {
 
-	void getMetric(String json);
+	void getEvent(CalculationCompletedEvent calculationCompletedEvent);
 }

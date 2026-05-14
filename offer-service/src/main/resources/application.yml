@@ -6,7 +6,16 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/hr
 
-kafka:
-  consumer:
-    topic: complete-calculation
-    group-id: offer-group
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      topic: complete-calculation
+      group-id: offer-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'

@@ -1,18 +1,20 @@
-package offer.data.dto;
+package calculation.data.event;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
+import calculation.data.enums.Grade;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import offer.data.enums.Grade;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MetricDto {
+public class CalculationCompletedEvent {
+	private UUID eventId;
 
 	private Integer candidateId;
 

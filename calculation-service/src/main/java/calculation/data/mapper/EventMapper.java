@@ -5,13 +5,14 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import calculation.data.dto.SalaryForkDto;
-import calculation.data.entity.Metric;
+import calculation.data.event.CalculationCompletedEvent;
 import calculation.data.event.CandidateCreatedEvent;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface MetricMapper {
+public interface EventMapper {
 
-	Metric candidateCreatedEventToMetric(CandidateCreatedEvent candidateCreatedEvent);
+	CalculationCompletedEvent candidateCreatedEventToCalculationCompletedEvent(CandidateCreatedEvent event);
 
-	void setSalaryForkToMetric(SalaryForkDto salaryFork, @MappingTarget Metric metric);
+	void setSalaryForkToCalculationCompletedEvent(SalaryForkDto salaryFork,
+			@MappingTarget CalculationCompletedEvent event);
 }

@@ -9,13 +9,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import calculation.data.dto.SalaryForkDto;
-import calculation.data.entity.Metric;
+import calculation.data.event.CalculationCompletedEvent;
 import calculation.data.event.CandidateCreatedEvent;
-import calculation.data.mapper.MetricMapper;
+import calculation.data.mapper.EventMapper;
 import calculation.service.CalculationService;
-import calculation.service.EventService;
+import calculation.service.InputEventService;
 import calculation.service.KafkaProducer;
-import calculation.service.MetricService;
+import calculation.service.OutputEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,9 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CalculationServiceImpl implements CalculationService {
 
-	private final MetricService metricService;
-	private final EventService eventService;
-	private final MetricMapper metricMapper;
+	private final OutputEventService outputEventService;
+	private final InputEventService inputEventService;
+	private final EventMapper eventMapper;
 	private final KafkaProducer kafkaProducer;
 	private final ObjectMapper objectMapper;
 
@@ -44,15 +44,15 @@ public class CalculationServiceImpl implements CalculationService {
 
 	@Override
 	public void calculateMetics(CandidateCreatedEvent event) {
-		CandidateCreatedEvent cachedEvent = eventService.getCandidateCreatedEventById(event.eventId());
+		CandidateCreatedEvent cachedEvent = inputEventService.getCandidateCreatedEventById(event.eventId());
 		if (cachedEvent != null) {
 			return;
 		}
-		eventService.saveCandidateCreatedEvent(event);
-		Metric metric = metricMapper.candidateCreatedEventToMetric(event);
+		inputEventService.saveCandidateCreatedEvent(event);
+		CalculationCompletedEvent metric = eventMapper.candidateCreatedEventToCalculationCompletedEvent(event);
 		SalaryForkDto salaryFork = getSalaryFork(event);
-		metricMapper.setSalaryForkToMetric(salaryFork, metric);
-		metricService.saveMetric(metric);
+		eventMapper.setSalaryForkToCalculationCompletedEvent(salaryFork, metric);
+		outputEventService.saveEvent(metric);
 		try {
 			String json = objectMapper.writeValueAsString(metric);
 			kafkaProducer.sendMessage(json, metric.getCandidateId());

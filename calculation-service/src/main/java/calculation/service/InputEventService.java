@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import calculation.data.event.CandidateCreatedEvent;
 
-public interface EventService {
+public interface InputEventService {
 
 	CandidateCreatedEvent saveCandidateCreatedEvent(CandidateCreatedEvent event);
 

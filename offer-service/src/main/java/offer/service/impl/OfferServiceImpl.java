@@ -3,6 +3,7 @@ package offer.service.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Example;
@@ -13,10 +14,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import offer.data.dto.MetricDto;
 import offer.data.entity.Offer;
+import offer.data.event.CalculationCompletedEvent;
 import offer.data.exception.OfferNotExistException;
 import offer.data.mapper.OfferMapper;
+import offer.repository.EventRepository;
 import offer.repository.OfferRepository;
 import offer.service.OfferService;
 
@@ -26,13 +28,19 @@ import offer.service.OfferService;
 public class OfferServiceImpl implements OfferService {
 
 	private final OfferRepository offerRepository;
+	private final EventRepository eventRepository;
 	private final OfferMapper offerMapper;
 
 	@Override
-	public void createOffer(MetricDto metric) {
-		Offer offer = offerMapper.metricDtoToOffer(metric);
-		BigDecimal salary = new BigDecimal(metric.getMinSalary().doubleValue()
-				+ Math.random() * (metric.getMaxSalary().doubleValue() - metric.getMinSalary().doubleValue()))
+	public void createOffer(CalculationCompletedEvent event) {
+		Optional<CalculationCompletedEvent> oldEventOptional = eventRepository.findById(event.eventId());
+		if (oldEventOptional.isPresent()) {
+			return;
+		}
+		eventRepository.save(event);
+		Offer offer = offerMapper.metricDtoToOffer(event);
+		BigDecimal salary = new BigDecimal(event.minSalary().doubleValue()
+				+ Math.random() * (event.maxSalary().doubleValue() - event.minSalary().doubleValue()))
 				.setScale(2, RoundingMode.HALF_UP);
 		offer.setSalary(salary);
 		offerRepository.save(offer);
