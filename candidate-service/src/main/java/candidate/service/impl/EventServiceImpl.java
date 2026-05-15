@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +12,6 @@ import candidate.data.entity.Event;
 import candidate.repository.EventRepository;
 import candidate.service.EventService;
 import candidate.service.KafkaProducer;
-import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -38,7 +36,6 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	@Transactional
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	public boolean sendOneMessage() {
 		Optional<Event> eventOptional = eventRepository.getOneEventToSending();
 		if (eventOptional.isEmpty()) {
