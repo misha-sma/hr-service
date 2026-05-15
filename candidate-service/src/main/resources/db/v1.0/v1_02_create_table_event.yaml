@@ -1,0 +1,33 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 1
+      author: Mikhail Silantev
+      changes:
+
+        - createTable:
+            tableName: event
+            columns:
+              - column:
+                  name: event_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: candidate_id
+                  type: integer
+              - column:
+                  name: message
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_sent
+                  type: boolean
+                  constraints:
+                    default: false
+              - column:
+                  name: create_date
+                  type: timestamp without time zone
+                  constraints:
+                    default: now()

@@ -1,0 +1,13 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 1
+      author: Mikhail Silantev
+      changes:
+
+        - addForeignKeyConstraint:
+            baseColumnNames: candidate_id
+            baseTableName: event
+            constraintName: fk_candidate
+            referencedColumnNames: candidate_id
+            referencedTableName: candidate

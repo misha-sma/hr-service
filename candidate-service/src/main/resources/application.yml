@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  liquibase:
+    change-log: classpath:db/database_changelog-master.yaml
   datasource:
     url: jdbc:postgresql://localhost:5432/hr
     driverClassName: org.postgresql.Driver

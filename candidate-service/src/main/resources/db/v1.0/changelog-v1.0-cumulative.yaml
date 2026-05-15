@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/v1.0/v1_01_create_table_candidate.yaml
+  - include:
+      file: classpath:db/v1.0/v1_02_create_table_event.yaml
+  - include:
+      file: classpath:db/v1.0/v1_03_add_foreign_key.yaml

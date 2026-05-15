@@ -1,0 +1,39 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 1
+      author: Mikhail Silantev
+      changes:
+
+        - createTable:
+            tableName: candidate
+            columns:
+              - column:
+                  name: candidate_id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: grade
+                  type: varchar(50)
+              - column:
+                  name: experience
+                  type: double precision
+              - column:
+                  name: current_salary
+                  type: numeric(10, 2)
+              - column:
+                  name: create_date
+                  type: timestamp without time zone
+                  constraints:
+                    default: now()
