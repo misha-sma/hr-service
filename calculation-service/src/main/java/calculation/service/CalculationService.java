@@ -4,5 +4,5 @@ import calculation.data.event.CandidateCreatedEvent;
 
 public interface CalculationService {
 
-	void calculateMetics(CandidateCreatedEvent candidateCreatedEvent);
+	void calculateMetrics(CandidateCreatedEvent candidateCreatedEvent);
 }

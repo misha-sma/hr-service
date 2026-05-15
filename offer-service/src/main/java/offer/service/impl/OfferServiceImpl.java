@@ -14,10 +14,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import offer.data.entity.Offer;
+import offer.data.dto.OfferDto;
 import offer.data.event.CalculationCompletedEvent;
 import offer.data.exception.OfferNotExistException;
 import offer.data.mapper.OfferMapper;
+import offer.entity.Offer;
 import offer.repository.EventRepository;
 import offer.repository.OfferRepository;
 import offer.service.OfferService;
@@ -38,7 +39,7 @@ public class OfferServiceImpl implements OfferService {
 			return;
 		}
 		eventRepository.save(event);
-		Offer offer = offerMapper.metricDtoToOffer(event);
+		Offer offer = offerMapper.calculationCompletedEventToOffer(event);
 		BigDecimal salary = new BigDecimal(event.minSalary().doubleValue()
 				+ Math.random() * (event.maxSalary().doubleValue() - event.minSalary().doubleValue()))
 				.setScale(2, RoundingMode.HALF_UP);
@@ -48,15 +49,16 @@ public class OfferServiceImpl implements OfferService {
 	}
 
 	@Override
-	public Offer getOffer(UUID offerId) {
-		return offerRepository.findById(offerId)
-				.orElseThrow(() -> new OfferNotExistException("Offer with id=" + offerId + " doesn't exist"));
+	public OfferDto getOffer(UUID offerId) {
+		return offerMapper.offerToOfferDto(offerRepository.findById(offerId)
+				.orElseThrow(() -> new OfferNotExistException("Offer with id=" + offerId + " doesn't exist")));
 	}
 
 	@Override
-	public List<Offer> getAllOffersByCandidate(Integer candidateId) {
+	public List<OfferDto> getAllOffersByCandidate(Integer candidateId) {
 		Offer offer = new Offer();
 		offer.setCandidateId(candidateId);
-		return offerRepository.findAll(Example.of(offer), Sort.by(List.of(new Order(Direction.DESC, "createDate"))));
+		return offerMapper.offersToOfferDtos(
+				offerRepository.findAll(Example.of(offer), Sort.by(List.of(new Order(Direction.DESC, "createDate")))));
 	}
 }

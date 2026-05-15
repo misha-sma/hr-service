@@ -24,6 +24,6 @@ public class KafkaConsumerImpl implements KafkaConsumer {
 			"spring.json.value.default.type=calculation.data.event.CandidateCreatedEvent" })
 	public void getCandidate(CandidateCreatedEvent candidateCreatedEvent) {
 		log.info("Receive candidate: " + candidateCreatedEvent.toString());
-		calculationService.calculateMetics(candidateCreatedEvent);
+		calculationService.calculateMetrics(candidateCreatedEvent);
 	}
 }

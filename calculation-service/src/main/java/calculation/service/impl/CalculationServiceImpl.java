@@ -37,7 +37,7 @@ public class CalculationServiceImpl implements CalculationService {
 	private BigDecimal maxSalary;
 
 	@Override
-	public void calculateMetics(CandidateCreatedEvent inputEvent) {
+	public void calculateMetrics(CandidateCreatedEvent inputEvent) {
 		CandidateCreatedEvent cachedEvent = inputEventService.getCandidateCreatedEventById(inputEvent.eventId());
 		if (cachedEvent != null) {
 			return;

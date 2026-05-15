@@ -1,4 +1,4 @@
-package offer.data.entity;
+package offer.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
