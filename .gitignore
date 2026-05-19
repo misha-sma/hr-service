@@ -1,4 +1,9 @@
-*/target/
+*/.gradle/
+*/gradle/
+*/gradlew
+*/gradlew.bat
+*/build/
+
 */.idea/
 
 */.settings/
