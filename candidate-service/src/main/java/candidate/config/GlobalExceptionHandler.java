@@ -3,6 +3,7 @@ package candidate.config;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import candidate.data.exception.CantWriteJsonException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,7 +18,7 @@ import lombok.Value;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler({ CandidateNotExistException.class, MethodArgumentNotValidException.class })
+	@ExceptionHandler({ CandidateNotExistException.class, MethodArgumentNotValidException.class, CantWriteJsonException.class })
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ErrorResponse handleDoubleEntryException(HttpServletRequest request, Exception e) {
 		return ErrorResponse.builder().title("BAD_REQUEST").detail(e.getMessage())

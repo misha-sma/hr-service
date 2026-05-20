@@ -1,5 +1,6 @@
 package candidate.service.impl;
 
+import candidate.data.exception.CantWriteJsonException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +61,7 @@ public class CandidateServiceImpl implements CandidateService {
 			event.setMessage(objectMapper.writeValueAsString(candidateCreatedEvent));
 		} catch (JsonProcessingException e) {
 			log.error(e.getMessage(), e);
+            throw new CantWriteJsonException("Can't write json with kafka event");
 		}
 		eventRepository.save(event);
 	}
